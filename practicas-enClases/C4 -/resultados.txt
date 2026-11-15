@@ -1,0 +1,29 @@
+SALIDA EN CONSOLA:
+=================
+
+Caso de estudio: asignación de personal técnico a proyectos eléctricos
+
+1. DEMOSTRACIÓN CON LOS 20 TRABAJADORES
+Trabajador buscado: T18
+Búsqueda lineal : posición 17, pasos 18
+Búsqueda binaria: posición 17, pasos 3
+Registro encontrado: T18 - Especialista MT
+
+2. MEDICIÓN DE TIEMPOS
+Datos: 20 trabajadores ordenados por identificador.
+Consultas: 1.000.000 búsquedas de identificadores existentes.
+Protocolo: 1 corrida de calentamiento + 3 corridas medidas + promedio.
+
+Corridas medidas: 3
+Promedio búsqueda lineal : 80,062 ms
+Promedio búsqueda binaria: 72,359 ms
+Cociente lineal / binaria: 1,11 veces
+
+| Algoritmo | Tiempo promedio (ms) |
+|---|---:|
+| Búsqueda lineal | 80,062 |
+| Búsqueda binaria | 72,359 |
+| Cociente (lineal / binaria) | 1,11 veces |
+
+Nota: los tiempos dependen del equipo y de las condiciones de ejecución.
+El cociente indica cuántas veces el tiempo lineal representa al binario.

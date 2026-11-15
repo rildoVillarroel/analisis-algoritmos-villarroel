@@ -1,0 +1,15 @@
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\bin\Debug\net8.0\PracticaC4.exe
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\bin\Debug\net8.0\PracticaC4.deps.json
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\bin\Debug\net8.0\PracticaC4.runtimeconfig.json
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\bin\Debug\net8.0\PracticaC4.dll
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\bin\Debug\net8.0\PracticaC4.pdb
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\obj\Debug\net8.0\PracticaC4.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\obj\Debug\net8.0\PracticaC4.AssemblyInfoInputs.cache
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\obj\Debug\net8.0\PracticaC4.AssemblyInfo.cs
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\obj\Debug\net8.0\PracticaC4.csproj.CoreCompileInputs.cache
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\obj\Debug\net8.0\PracticaC4.sourcelink.json
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\obj\Debug\net8.0\PracticaC4.dll
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\obj\Debug\net8.0\refint\PracticaC4.dll
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\obj\Debug\net8.0\PracticaC4.pdb
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\obj\Debug\net8.0\PracticaC4.genruntimeconfig.cache
+C:\Users\starck\Documents\analisis-algoritmos-villarroel\practicas-enClases\C4 -\obj\Debug\net8.0\ref\PracticaC4.dll
