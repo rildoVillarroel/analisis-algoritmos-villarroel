@@ -108,9 +108,7 @@ MergeSort       40000           3,9513
 BurbujaSort     80000           9321,2959      
 MergeSort       80000           7,4892         
 
-======================================
- EXPERIMENTO FINALIZADO
-======================================
+PRUEBA DEL TORNEO FINALIZADO
 
 Archivos generados:
 1. analisis-algoritmos-villarroel\practicas-enClases\c5-torneoAlgoritmos\torneoAlgoritmos\resultados.csv
