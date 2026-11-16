@@ -1,0 +1,7 @@
+Algoritmo,Tamano,Promedio_ms
+BusquedaLineal,100000,23.1657
+BusquedaBinaria,100000,0.1525
+BusquedaLineal,500000,73.2746
+BusquedaBinaria,500000,0.1712
+BusquedaLineal,1000000,150.4850
+BusquedaBinaria,1000000,0.2126

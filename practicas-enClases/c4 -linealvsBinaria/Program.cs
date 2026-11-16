@@ -1,194 +1,401 @@
+﻿// COMPARACIÓN MEDIDA: BÚSQUEDA LINEAL CONTRA BÚSQUEDA BINARIA
+//
+// Datos: arreglo ORDENADO de enteros (1.000.000 en el tamaño principal) y 1.000 claves que SÍ existen en él.
+// Datos sintéticos generados con semilla fija.
+//
+// PROTOCOLO:
+//   · 3 calentamientos por algoritmo
+//   · 3 mediciones por algoritmo y tamaño
+//   · Promedio = suma de tiempos / 3
+//   · Verificación EstaOrdenado() + cada clave encontrada en su posición correcta (fuera del tiempo medido)
+//   · Resultados en archivos CSV
+//
+// CSV que genera:
+//   resultados.csv -> cada corrida   (Algoritmo,Tamano,Repeticion,Tiempo_ms)
+//   resumen.csv    -> promedios      (Algoritmo,Tamano,Promedio_ms)
+//   conteos.csv    -> comparaciones exactas (no dependen de la máquina)
+//
+// Ejecutar:  dotnet run -c Release
+
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 
-Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-var trabajadores = CrearTrabajadores();
-
-Console.WriteLine("PRÁCTICA C4 - BÚSQUEDA LINEAL CONTRA BÚSQUEDA BINARIA");
-Console.WriteLine("Caso de estudio: asignación de personal técnico a proyectos eléctricos");
-Console.WriteLine();
-
-DemostrarBusqueda(trabajadores, 18);
-MedirRendimiento(trabajadores);
-
-static Trabajador[] CrearTrabajadores()
+class Program
 {
-    // Registros de prueba basados en la estructura del proyecto.
-    // Los códigos T01...T20 corresponden a los 20 trabajadores del caso de estudio.
-    // El identificador numérico permite comparar búsquedas por una clave única.
-    string[] perfiles =
+    static void Main()
     {
-        "Responsable de proyectos",
-        "Especialista MT",
-        "Especialista MT",
-        "Liniero MT",
-        "Liniero MT",
-        "Seguridad industrial",
-        "Especialista instalaciones hospitalarias",
-        "Instalador BT",
-        "Instalador BT",
-        "Técnico de pruebas eléctricas",
-        "Supervisor de instalaciones",
-        "Instalador BT",
-        "Instalador BT",
-        "Control de calidad",
-        "Ingeniero de automatización",
-        "Instrumentación industrial",
-        "Técnico electromecánico",
-        "Especialista MT",
-        "Especialista en protecciones",
-        "Técnico de mantenimiento"
-    };
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-    var datos = new Trabajador[perfiles.Length];
+        int[] tamanos = { 100000, 500000, 1000000 };   // el tamaño pedido es 1.000.000; los otros muestran la tendencia
+        int cantidadClaves = 1000;
+        int calentamientos = 3;
+        int repeticiones = 3;
+        string[] algoritmos = { "BusquedaLineal", "BusquedaBinaria" };
 
-    for (int i = 0; i < perfiles.Length; i++)
-        datos[i] = new Trabajador(i + 1, $"T{i + 1:00}", perfiles[i]);
+        Random random = new Random(12345);
 
-    // Para búsqueda binaria, el arreglo debe estar ordenado por Id.
-    Array.Sort(datos, (a, b) => a.Id.CompareTo(b.Id));
-    return datos;
-}
+        Console.WriteLine("----------------------------------------------");
+        Console.WriteLine(" BUSQUEDA LINEAL CONTRA BUSQUEDA BINARIA");
+        Console.WriteLine("----------------------------------------------");
 
-static (int posicion, int pasos) BusquedaLineal(Trabajador[] datos, int idBuscado)
-{
-    int pasos = 0;
-
-    for (int i = 0; i < datos.Length; i++)
-    {
-        pasos++;
-        if (datos[i].Id == idBuscado)
-            return (i, pasos);
-    }
-
-    return (-1, pasos);
-}
-
-static (int posicion, int pasos) BusquedaBinaria(Trabajador[] datos, int idBuscado)
-{
-    int pasos = 0;
-    int inicio = 0;
-    int fin = datos.Length - 1;
-
-    while (inicio <= fin)
-    {
-        int medio = inicio + (fin - inicio) / 2;
-        pasos++;
-
-        if (datos[medio].Id == idBuscado)
-            return (medio, pasos);
-
-        if (datos[medio].Id < idBuscado)
-            inicio = medio + 1;
-        else
-            fin = medio - 1;
-    }
-
-    return (-1, pasos);
-}
-
-static void DemostrarBusqueda(Trabajador[] trabajadores, int idBuscado)
-{
-    var lineal = BusquedaLineal(trabajadores, idBuscado);
-    var binaria = BusquedaBinaria(trabajadores, idBuscado);
-
-    Console.WriteLine("1. DEMOSTRACIÓN CON LOS 20 TRABAJADORES");
-    Console.WriteLine($"Trabajador buscado: T{idBuscado:00}");
-    Console.WriteLine($"Búsqueda lineal : posición {lineal.posicion}, pasos {lineal.pasos}");
-    Console.WriteLine($"Búsqueda binaria: posición {binaria.posicion}, pasos {binaria.pasos}");
-
-    if (lineal.posicion >= 0)
-        Console.WriteLine($"Registro encontrado: {trabajadores[lineal.posicion].Codigo} - " +
-                          $"{trabajadores[lineal.posicion].Perfil}");
-
-    Console.WriteLine();
-}
-
-static void MedirRendimiento(Trabajador[] trabajadores)
-{
-    Console.WriteLine("2. MEDICIÓN DE TIEMPOS");
-    Console.WriteLine("Datos: 20 trabajadores ordenados por identificador.");
-    Console.WriteLine("Consultas: 1.000.000 búsquedas de identificadores existentes.");
-    Console.WriteLine("Protocolo: 1 corrida de calentamiento + 3 corridas medidas + promedio.");
-    Console.WriteLine();
-
-    const int cantidadConsultas = 1_000_000;
-    var random = new Random(21);
-    var claves = new int[cantidadConsultas];
-
-    // Las mismas claves se utilizan en ambos algoritmos para que la comparación sea justa.
-    for (int i = 0; i < claves.Length; i++)
-        claves[i] = random.Next(1, trabajadores.Length + 1);
-
-    double MedirLineal()
-    {
-        var reloj = Stopwatch.StartNew();
-        long acumulado = 0;
-
-        foreach (int clave in claves)
-            acumulado += BusquedaLineal(trabajadores, clave).posicion;
-
-        reloj.Stop();
-        GC.KeepAlive(acumulado);
-        return reloj.Elapsed.TotalMilliseconds;
-    }
-
-    double MedirBinaria()
-    {
-        var reloj = Stopwatch.StartNew();
-        long acumulado = 0;
-
-        foreach (int clave in claves)
-            acumulado += BusquedaBinaria(trabajadores, clave).posicion;
-
-        reloj.Stop();
-        GC.KeepAlive(acumulado);
-        return reloj.Elapsed.TotalMilliseconds;
-    }
-
-    // Calentamiento: ejecuta ambos métodos antes de registrar tiempos.
-    MedirLineal();
-    MedirBinaria();
-
-    double sumaLineal = 0;
-    double sumaBinaria = 0;
-
-    for (int corrida = 1; corrida <= 3; corrida++)
-    {
-        // Alternar el orden reduce el efecto de medir siempre un algoritmo primero.
-        if (corrida % 2 == 1)
+        // Generar los datos originales (arreglo ordenado + claves que existen + posición esperada de cada clave)
+        var arreglos = new Dictionary<int, int[]>();
+        var claves = new Dictionary<int, int[]>();
+        var esperados = new Dictionary<int, int[]>();
+        foreach (int n in tamanos)
         {
-            sumaLineal += MedirLineal();
-            sumaBinaria += MedirBinaria();
+            int[] arreglo = GenerarOrdenado(n, random);
+            GenerarClaves(arreglo, cantidadClaves, random, out int[] k, out int[] pos);
+            arreglos[n] = arreglo;
+            claves[n] = k;
+            esperados[n] = pos;
+        }
+
+        // ==================================
+        // FASE 1: CALENTAMIENTO (3 por algoritmo)
+        // ==================================
+
+        Console.WriteLine("\nFASE 1: CALENTAMIENTO");
+
+        int[] arregloCalentamiento = GenerarOrdenado(10000, random);
+        GenerarClaves(arregloCalentamiento, 100, random, out int[] clavesCalentamiento, out _);
+
+        foreach (string algoritmo in algoritmos)
+        {
+            for (int i = 0; i < calentamientos; i++)
+            {
+                EjecutarTodas(algoritmo, arregloCalentamiento, clavesCalentamiento);
+                Console.WriteLine($"{algoritmo} - Calentamiento {i + 1} completado.");
+            }
+        }
+
+        // ==================================
+        // FASE 2: VERIFICACION PREVIA
+        // ==================================
+
+        Console.WriteLine("\nFASE 2: VERIFICACION");
+
+        foreach (int n in tamanos)
+        {
+            if (!EstaOrdenado(arreglos[n]))
+                throw new Exception($"Error: el arreglo de {n} elementos NO esta ordenado.");
+
+            foreach (string algoritmo in algoritmos)
+                VerificarBusquedas(algoritmo, arreglos[n], claves[n], esperados[n]);
+
+            Console.WriteLine(
+                $"{n:N0} elementos: arreglo ordenado y las {cantidadClaves:N0} claves se encuentran con ambos algoritmos."
+            );
+        }
+
+        // ==================================
+        // FASE 3: MEDICIONES
+        // ==================================
+
+        Console.WriteLine("\nFASE 3: MEDICIONES");
+
+        var resultados = new List<string>();
+        resultados.Add("Algoritmo,Tamano,Repeticion,Tiempo_ms");
+
+        var resumen = new List<string>();
+        resumen.Add("Algoritmo,Tamano,Promedio_ms");
+
+        var conteos = new List<string>();
+        conteos.Add("Algoritmo,Tamano,Claves,Comparaciones_totales,Comparaciones_por_clave");
+
+        var tablaPromedios = new List<(string algoritmo, int tamano, double promedio, long comparaciones)>();
+
+        foreach (int n in tamanos)
+        {
+            Console.WriteLine($"\nTAMANO: {n:N0} elementos, {cantidadClaves:N0} claves");
+
+            foreach (string algoritmo in algoritmos)
+            {
+                double suma = 0;
+
+                for (int r = 1; r <= repeticiones; r++)
+                {
+                    // Iniciar cronometro
+                    Stopwatch reloj = Stopwatch.StartNew();
+
+                    long suma_posiciones = EjecutarTodas(algoritmo, arreglos[n], claves[n]);
+
+                    reloj.Stop();
+
+                    // Verificar fuera del tiempo medido
+                    if (suma_posiciones != SumaPosiciones(esperados[n]))
+                        throw new Exception($"Error en {algoritmo}: encontro posiciones incorrectas.");
+
+                    double tiempo = reloj.Elapsed.TotalMilliseconds;
+                    suma += tiempo;
+
+                    resultados.Add(
+                        $"{algoritmo},{n},{r}," +
+                        tiempo.ToString("F4", CultureInfo.InvariantCulture)
+                    );
+
+                    Console.WriteLine($"{algoritmo} - Ejecucion {r}: {tiempo:F4} ms");
+                }
+
+                double promedio = suma / repeticiones;
+
+                resumen.Add(
+                    $"{algoritmo},{n}," +
+                    promedio.ToString("F4", CultureInfo.InvariantCulture)
+                );
+
+                // Comparaciones exactas (pasada aparte, fuera del tiempo medido)
+                long comparaciones = ContarComparaciones(algoritmo, arreglos[n], claves[n]);
+                double porClave = (double)comparaciones / cantidadClaves;
+
+                conteos.Add(
+                    $"{algoritmo},{n},{cantidadClaves},{comparaciones}," +
+                    porClave.ToString("F2", CultureInfo.InvariantCulture)
+                );
+
+                tablaPromedios.Add((algoritmo, n, promedio, comparaciones));
+
+                Console.WriteLine($"PROMEDIO {algoritmo}: {promedio:F4} ms");
+            }
+        }
+
+        // ==================================
+        // FASE 4: MOSTRAR TABLA FINAL
+        // ==================================
+
+        Console.WriteLine("\n---------------------------------------------------------------");
+        Console.WriteLine(" TABLA DE PROMEDIOS");
+        Console.WriteLine("---------------------------------------------------------------");
+
+        Console.WriteLine(
+            "{0,-16} {1,-12} {2,-15} {3,-18}",
+            "ALGORITMO", "ELEMENTOS", "PROMEDIO (ms)", "COMPARACIONES"
+        );
+
+        Console.WriteLine("---------------------------------------------------------------");
+
+        foreach (var fila in tablaPromedios)
+        {
+            Console.WriteLine(
+                "{0,-16} {1,-12} {2,-15:F4} {3,-18:N0}",
+                fila.algoritmo, fila.tamano.ToString("N0"), fila.promedio, fila.comparaciones
+            );
+        }
+
+        Console.WriteLine("\nCUANTAS VECES MAS RAPIDA ES LA BINARIA (tiempo lineal / tiempo binaria):");
+        foreach (int n in tamanos)
+        {
+            double lineal = 0, binaria = 0;
+            foreach (var fila in tablaPromedios)
+            {
+                if (fila.tamano != n) continue;
+                if (fila.algoritmo == "BusquedaLineal") lineal = fila.promedio;
+                else binaria = fila.promedio;
+            }
+            string veces = binaria > 0 ? $"{lineal / binaria:N0}" : "(tiempo binaria demasiado pequeno)";
+            Console.WriteLine($"  n = {n,9:N0}: {veces} veces");
+        }
+
+        // ==================================
+        // FASE 5: EXPORTAR ARCHIVOS CSV
+        // ==================================
+
+        string rutaResultados = Path.Combine(Directory.GetCurrentDirectory(), "resultados.csv");
+        string rutaResumen = Path.Combine(Directory.GetCurrentDirectory(), "resumen.csv");
+        string rutaConteos = Path.Combine(Directory.GetCurrentDirectory(), "conteos.csv");
+
+        File.WriteAllLines(rutaResultados, resultados);
+        File.WriteAllLines(rutaResumen, resumen);
+        File.WriteAllLines(rutaConteos, conteos);
+
+        Console.WriteLine("\n======================================");
+        Console.WriteLine(" EXPERIMENTO FINALIZADO");
+        Console.WriteLine("======================================");
+
+        Console.WriteLine("\nArchivos generados:");
+        Console.WriteLine($"1. {rutaResultados}");
+        Console.WriteLine($"2. {rutaResumen}");
+        Console.WriteLine($"3. {rutaConteos}");
+
+        Console.WriteLine("\nTodos los resultados fueron verificados.");
+    }
+
+    // ==================================
+    // GENERAR DATOS
+    // ==================================
+
+    // Arreglo ORDENADO y sin repetidos: cada elemento es el anterior + un salto aleatorio entre 1 y 5
+    static int[] GenerarOrdenado(int n, Random random)
+    {
+        int[] arreglo = new int[n];
+        int valor = 0;
+
+        for (int i = 0; i < n; i++)
+        {
+            valor += random.Next(1, 6);
+            arreglo[i] = valor;
+        }
+
+        return arreglo;
+    }
+
+    // Claves tomadas DEL arreglo (todas existen), junto con la posicion donde estan
+    static void GenerarClaves(int[] arreglo, int cantidad, Random random, out int[] claves, out int[] posiciones)
+    {
+        claves = new int[cantidad];
+        posiciones = new int[cantidad];
+
+        for (int k = 0; k < cantidad; k++)
+        {
+            int pos = random.Next(0, arreglo.Length);
+            posiciones[k] = pos;
+            claves[k] = arreglo[pos];
+        }
+    }
+
+    // ==================================
+    // ALGORITMO 1: BUSQUEDA LINEAL O(n)
+    // ==================================
+
+    static int BusquedaLineal(int[] arreglo, int clave)
+    {
+        for (int i = 0; i < arreglo.Length; i++)
+        {
+            if (arreglo[i] == clave)
+                return i;
+        }
+
+        return -1;
+    }
+
+    // ==================================
+    // ALGORITMO 2: BUSQUEDA BINARIA O(log n)
+    // ==================================
+
+    static int BusquedaBinaria(int[] arreglo, int clave)
+    {
+        int izquierda = 0;
+        int derecha = arreglo.Length - 1;
+
+        while (izquierda <= derecha)
+        {
+            int medio = izquierda + (derecha - izquierda) / 2;
+
+            if (arreglo[medio] == clave)
+                return medio;
+
+            if (arreglo[medio] < clave)
+                izquierda = medio + 1;
+            else
+                derecha = medio - 1;
+        }
+
+        return -1;
+    }
+
+    // ==================================
+    // EJECUTAR TODAS LAS CLAVES CON UN ALGORITMO
+    // Devuelve la suma de las posiciones halladas (evita que el compilador descarte el trabajo
+    // y sirve para verificar fuera del tiempo medido)
+    // ==================================
+
+    static long EjecutarTodas(string algoritmo, int[] arreglo, int[] claves)
+    {
+        long suma = 0;
+
+        if (algoritmo == "BusquedaLineal")
+        {
+            for (int k = 0; k < claves.Length; k++)
+                suma += BusquedaLineal(arreglo, claves[k]);
         }
         else
         {
-            sumaBinaria += MedirBinaria();
-            sumaLineal += MedirLineal();
+            for (int k = 0; k < claves.Length; k++)
+                suma += BusquedaBinaria(arreglo, claves[k]);
+        }
+
+        return suma;
+    }
+
+    static long SumaPosiciones(int[] posiciones)
+    {
+        long suma = 0;
+        foreach (int p in posiciones) suma += p;
+        return suma;
+    }
+
+    // ==================================
+    // CONTAR COMPARACIONES (pasada aparte, no se cronometra)
+    // ==================================
+
+    static long ContarComparaciones(string algoritmo, int[] arreglo, int[] claves)
+    {
+        long total = 0;
+
+        foreach (int clave in claves)
+        {
+            if (algoritmo == "BusquedaLineal")
+            {
+                for (int i = 0; i < arreglo.Length; i++)
+                {
+                    total++;
+                    if (arreglo[i] == clave) break;
+                }
+            }
+            else
+            {
+                int izquierda = 0;
+                int derecha = arreglo.Length - 1;
+
+                while (izquierda <= derecha)
+                {
+                    int medio = izquierda + (derecha - izquierda) / 2;
+                    total++;
+
+                    if (arreglo[medio] == clave) break;
+
+                    if (arreglo[medio] < clave) izquierda = medio + 1;
+                    else derecha = medio - 1;
+                }
+            }
+        }
+
+        return total;
+    }
+
+    // ==================================
+    // VERIFICAR QUE CADA CLAVE SE ENCUENTRA EN SU POSICION
+    // ==================================
+
+    static void VerificarBusquedas(string algoritmo, int[] arreglo, int[] claves, int[] esperados)
+    {
+        for (int k = 0; k < claves.Length; k++)
+        {
+            int pos = algoritmo == "BusquedaLineal"
+                ? BusquedaLineal(arreglo, claves[k])
+                : BusquedaBinaria(arreglo, claves[k]);
+
+            if (pos != esperados[k])
+                throw new Exception($"Error: {algoritmo} no encontro la clave {claves[k]} en su posicion.");
         }
     }
 
-    double promedioLineal = sumaLineal / 3.0;
-    double promedioBinaria = sumaBinaria / 3.0;
-    double cociente = promedioBinaria > 0
-        ? promedioLineal / promedioBinaria
-        : 0;
+    // ==================================
+    // VERIFICAR SI EL ARREGLO ESTA ORDENADO
+    // ==================================
 
-    Console.WriteLine("Corridas medidas: 3");
-    Console.WriteLine($"Promedio búsqueda lineal : {promedioLineal:F3} ms");
-    Console.WriteLine($"Promedio búsqueda binaria: {promedioBinaria:F3} ms");
-    Console.WriteLine($"Cociente lineal / binaria: {cociente:F2} veces");
-    Console.WriteLine();
+    static bool EstaOrdenado(int[] arreglo)
+    {
+        for (int i = 0; i < arreglo.Length - 1; i++)
+        {
+            if (arreglo[i] > arreglo[i + 1])
+                return false;
+        }
 
-    Console.WriteLine("| Algoritmo | Tiempo promedio (ms) |");
-    Console.WriteLine("|---|---:|");
-    Console.WriteLine($"| Búsqueda lineal | {promedioLineal:F3} |");
-    Console.WriteLine($"| Búsqueda binaria | {promedioBinaria:F3} |");
-    Console.WriteLine($"| Cociente (lineal / binaria) | {cociente:F2} veces |");
-    Console.WriteLine();
-
-    Console.WriteLine("Nota: los tiempos dependen del equipo y de las condiciones de ejecución.");
-    Console.WriteLine("El cociente indica cuántas veces el tiempo lineal representa al binario.");
+        return true;
+    }
 }
-
-record Trabajador(int Id, string Codigo, string Perfil);

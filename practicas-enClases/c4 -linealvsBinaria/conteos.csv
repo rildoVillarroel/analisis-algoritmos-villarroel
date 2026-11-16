@@ -1,0 +1,7 @@
+Algoritmo,Tamano,Claves,Comparaciones_totales,Comparaciones_por_clave
+BusquedaLineal,100000,1000,50915615,50915.61
+BusquedaBinaria,100000,1000,15691,15.69
+BusquedaLineal,500000,1000,251382390,251382.39
+BusquedaBinaria,500000,1000,17953,17.95
+BusquedaLineal,1000000,1000,489230498,489230.50
+BusquedaBinaria,1000000,1000,18886,18.89
