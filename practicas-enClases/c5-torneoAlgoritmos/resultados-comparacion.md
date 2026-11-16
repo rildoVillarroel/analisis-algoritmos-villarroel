@@ -1,8 +1,9 @@
 # INFORME EXPERIMENTAL: COMPARACIÓN DE ALGORITMOS DE ORDENAMIENTO
+# Burbuja Sort vs Merge Sort
 
 ## Objetivo
 
-Comparar experimentalmente el rendimiento de los algoritmos Bubble Sort y Merge Sort mediante diferentes cantidades de elementos, identificando sus diferencias de eficiencia y comportamiento temporal.
+Comparar experimentalmente el rendimiento de los algoritmos Burbuja Sort y Merge Sort mediante diferentes cantidades de elementos, identificando sus diferencias de eficiencia y comportamiento temporal.
 
 ## Metodología
 
