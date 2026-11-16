@@ -1,6 +1,5 @@
-# Elección del algoritmo para MI caso — practicas/c6/eleccion.md
-
-> Todos los datos de este documento son **sintéticos** (generados para el caso de estudio). No representan trabajadores ni proyectos reales.
+# Elección del algoritmo para MI caso:
+# proyecto : ALGORITMO DE ASIGNACION OPTIMA PERSONAL DE EMPRESA ELECTRICA
 
 ## 1. Mi proceso, en una línea
 
@@ -92,7 +91,6 @@ Operación que más pesa: elegir la combinación de menor costo entre las n! pos
 20! = 2,432,902,008,176,640,000 permutaciones. A 100 millones de permutaciones por segundo (hipótesis generosa):
   tardaría ~771 años. El húngaro hace 8.000 pasos de orden n³.
 
-====================================================================================================
 --------------------------------------------------------
  TORNEO DE ASIGNACIÓN: FUERZA BRUTA · VORAZ · HÚNGARO
 --------------------------------------------------------
@@ -317,9 +315,7 @@ CUBRE = puestos cubiertos / puestos requeridos (el voraz puede dejar puestos sin
 Fuerza bruta medida en ESTA máquina: ~92.7 millones de llamadas por segundo.
 Para n = 20 harían falta ~6.61E+18 llamadas  ->  ~2,261 años.
 
-======================================
  PRUEBA DE ELECCION FINALIZADA
-======================================
 
 Archivos generados:
 1. analisis-algoritmos-villarroel\practicas-enClases\c6-argumentadaCoste\argumentadaCoste\resultados.csv
@@ -328,7 +324,6 @@ Archivos generados:
 
 Todas las asignaciones fueron verificadas.
 
-====================================================================================================
 PARTE D · CALIDAD DE LA ASIGNACIÓN: rápido no es lo mismo que óptimo
 
 Caso 2×2 [[1,2],[2,100]]      : fuerza bruta = 4 | voraz = 101 | húngaro = 4
