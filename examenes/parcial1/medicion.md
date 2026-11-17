@@ -1,4 +1,4 @@
-Rildo Villarroel
+# Pablo Rildo Villarroel Fernandez
 
 # P1.2 — Curar y medir
 
