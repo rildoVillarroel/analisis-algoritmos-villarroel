@@ -74,13 +74,9 @@ Con solo 20 trabajadores y 20 puestos, una lista podría ser suficiente y las di
 ## 6. Código de demostración y ejecucion consola
 
 dotnet new console -n InventarioAsignacion
-```
-
-Copia este `Program.cs` sobre el archivo generado y ejecuta:
-
-```bash
 dotnet run
-```
+dotnet new console -n InventarioAsignacion --force
+
 
 ## 7. Conclusión
 

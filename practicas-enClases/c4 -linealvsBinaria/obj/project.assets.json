@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\starck\\Documents\\analisis-algoritmos-villarroel\\practicas-enClases\\c4 -linealvsBinaria\\linealBinaria\\linealBinaria.csproj",
+      "projectUniqueName": "C:\\Users\\starck\\Documents\\analisis-algoritmos-villarroel\\practicas-enClases\\c4 -linealvsBinaria\\linealBinaria.csproj",
       "projectName": "linealBinaria",
-      "projectPath": "C:\\Users\\starck\\Documents\\analisis-algoritmos-villarroel\\practicas-enClases\\c4 -linealvsBinaria\\linealBinaria\\linealBinaria.csproj",
+      "projectPath": "C:\\Users\\starck\\Documents\\analisis-algoritmos-villarroel\\practicas-enClases\\c4 -linealvsBinaria\\linealBinaria.csproj",
       "packagesPath": "C:\\Users\\starck\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\starck\\Documents\\analisis-algoritmos-villarroel\\practicas-enClases\\c4 -linealvsBinaria\\linealBinaria\\obj\\",
+      "outputPath": "C:\\Users\\starck\\Documents\\analisis-algoritmos-villarroel\\practicas-enClases\\c4 -linealvsBinaria\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\starck\\AppData\\Roaming\\NuGet\\NuGet.Config"
