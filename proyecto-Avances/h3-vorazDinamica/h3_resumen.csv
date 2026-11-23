@@ -1,0 +1,9 @@
+Algoritmo,N,Promedio_ms,Factor_vs_n_anterior,PuntajeOptimo
+FuerzaBruta,7,3.543600,,525
+Dinamica,7,0.081100,,525
+FuerzaBruta,8,16.976367,4.7907,642
+Dinamica,8,0.053867,0.6642,642
+FuerzaBruta,9,27.792933,1.6372,754
+Dinamica,9,0.046900,0.8707,754
+FuerzaBruta,10,106.923567,3.8471,844
+Dinamica,10,0.083767,1.7861,844
