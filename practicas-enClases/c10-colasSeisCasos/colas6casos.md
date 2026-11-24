@@ -15,6 +15,7 @@ a) El botón «atrás» de un navegador
 •	Estructura: Pila (Stack)
 •	Costo: O(1) para guardar página (Push) y O(1) para volver (Pop).
 •	Porqué: Necesita comportamiento LIFO (última página visitada es la primera a la que regresas).
+
 b) Los trabajos que esperan turno en una impresora compartida
 •	Estructura: Cola (Queue)
 •	Costo: O(1) para encolar (Enqueue) y O(1) para imprimir el siguiente (Dequeue).
