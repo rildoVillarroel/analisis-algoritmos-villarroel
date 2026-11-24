@@ -1,60 +1,60 @@
-# H3 — Estrategia: programación dinámica para la asignación de personal
+# Pablo Rildo Villarroel Fernández
 
-## 1. Decisión repetida y objetivo
+# hitos/h3/estrategia.md — ¿Mi caso admite un voraz o una dinámica?
 
-En el proyecto académico de asignación de personal técnico a cinco proyectos eléctricos (línea MT rural, hospital de segundo nivel, centro de eventos/coliseo, línea de envasado automatizada y mantenimiento de celdas MT) se decide qué trabajador ocupa cada puesto.
+> Proyecto: asignación óptima de personal técnico a proyectos eléctricos. Datos sintéticos.
 
-Para estudiar el algoritmo se define una versión simplificada:
-- Hay `n` trabajadores y `n` puestos.
-- Cada trabajador ocupa exactamente un puesto y cada puesto recibe exactamente un trabajador.
-- Cada pareja trabajador–puesto tiene una puntuación sintética de compatibilidad, que representa habilidades, experiencia, certificaciones y disponibilidad.
-- Se maximiza la suma de las puntuaciones.
+## 1. La decisión que se repite y el resultado a optimizar
 
-Los datos del experimento son sintéticos, reproducibles y no representan evaluaciones reales de personas.
+- **Decisión que se repite:** «¿a qué puesto va el trabajador i?», una vez por cada uno de los n trabajadores (hoy n = 20; peor mes, hipótesis de trabajo, n = 100).
+- **Resultado a optimizar:** el **costo total mínimo** C = Σ costo[i, puesto de i], donde costo = 100 − puntuación (puntuación = 0,50·competencia + 0,25·experiencia + 0,15·disponibilidad + 0,10·equilibrio de carga). Cada trabajador ocupa un solo puesto y cada puesto lo cubre una sola persona; los pares que incumplen restricciones obligatorias están prohibidos.
 
-## 2. ¿Voraz o programación dinámica?
+## 2. Las tres preguntas de la clase 12, en orden
 
-Un voraz podría elegir en cada paso la pareja libre con mayor puntuación. Sin embargo, esa decisión local puede bloquear una combinación global mejor.
+### a) ¿Tiene subestructura óptima? **Sí**
 
-Contraejemplo:
+Si en la asignación óptima el trabajador T_n va al puesto P, entonces el resto de las asignaciones tiene que ser óptima para los n−1 trabajadores y los n−1 puestos que quedan; si no lo fuera, cambiaría ese resto por uno mejor y bajaría el total, contradiciendo que era óptima. La solución grande se arma con soluciones óptimas de pedazos más chicos.
 
-| | Puesto A | Puesto B |
-|---|---:|---:|
-| Trabajador 1 | 10 | 9 |
-| Trabajador 2 | 9 | 1 |
+### b) ¿Alcanza con elegir lo mejor ahora (voraz)? **No**
 
-El voraz elige Trabajador 1 → A (10) y deja Trabajador 2 → B (1): total 11. La solución óptima es Trabajador 1 → B (9) y Trabajador 2 → A (9): total 18. Por tanto, el voraz no garantiza el óptimo.
+La elección local es «el par trabajador-puesto más barato que siga disponible». No es segura. **Contraejemplo** (costos, filas = trabajadores, columnas = puestos):
 
-## 3. Por qué aplica programación dinámica
+|  | Puesto 1 | Puesto 2 |
+|---|---|---|
+| Trabajador 1 | **1** | 2 |
+| Trabajador 2 | 2 | 100 |
 
-- **Subestructura óptima:** una asignación óptima completa debe contener una asignación óptima para el estado parcial que deja, porque de lo contrario se podría sustituir esa parte por una mejor y mejorar el total.
-- **Subproblemas repetidos:** distintas secuencias de asignaciones pueden llegar al mismo conjunto de puestos ocupados. Si el estado se identifica por ese conjunto, se conserva una sola vez el mejor puntaje alcanzable.
+- **Voraz:** toma el 1 (T1-P1) y queda obligado a pagar 100 (T2-P2) → **101**.
+- **Óptimo:** T1-P2 y T2-P1 → 2 + 2 = **4**.
 
-Se aplica tabulación (de abajo hacia arriba) con una máscara de bits que representa los puestos ocupados.
+Lo mejor ahora dejó al otro trabajador sin alternativa. Por eso el voraz no se puede demostrar correcto en mi caso (y además, con restricciones obligatorias, puede ni siquiera cubrir todos los puestos aunque exista una asignación completa). La evidencia en 200 instancias sintéticas está en `comparacion.md` (`voraz.csv`).
 
-## 4. Estado y recurrencia
+### c) ¿Hay subproblemas que se repiten? **Sí, y es lo que habilita la dinámica**
 
-Sea `dp[mask]` la máxima puntuación al asignar los primeros `i = popcount(mask)` trabajadores a los puestos marcados en `mask`.
+Un subproblema es «los primeros i trabajadores ya están asignados a un conjunto S de puestos; falta asignar al resto». **Lo único que importa es qué puestos están usados, no el orden en que se usaron.**
 
-Estado inicial: `dp[0] = 0`.
+Ejemplo con n = 3: T1→P1 y T2→P2 deja usados {P1, P2}; T1→P2 y T2→P1 también deja usados {P1, P2}. Los dos caminos llegan al mismo subproblema («falta asignar a T3 con el puesto P3»), que la fuerza bruta resuelve dos veces y la dinámica una sola.
 
-Si el estado `mask` tiene `i` puestos ocupados, se puede asignar el trabajador `i` a cualquier puesto libre `j`:
+Conteo: la fuerza bruta recorre n! caminos; los subproblemas distintos son solo 2^n (los subconjuntos de puestos). Con n = 10: 3.628.800 caminos contra 1.024 subproblemas.
 
-`dp[mask | (1 << j)] = max(dp[mask | (1 << j)], dp[mask] + puntuacion[i,j])`.
+## 3. Conclusión: **aplica la programación dinámica**
 
-La respuesta es `dp[(1 << n) - 1]`.
+- **Estados:** `dp[máscara]` = mejor costo de asignar a los primeros popcount(máscara) trabajadores exactamente los puestos de la máscara (cada puesto es un bit).
+- **Transición:** `dp[máscara ∪ {j}] = min( dp[máscara] + costo[i, j] )`, con i = popcount(máscara) y j un puesto libre.
+- **Costo:** tiempo O(n · 2^n) (exactamente n·2^(n−1) transiciones) y memoria O(2^n); contra O(n · n!) de la fuerza bruta. Se implementa abajo→arriba (tabla) y arriba→abajo (memoización); con memoria las llamadas pasan de ≈ e·n! a 1 + n·2^(n−1).
 
-## 5. Costos
+## 4. La salvedad honesta (panorama NP)
 
-- Fuerza bruta: enumera las `n!` permutaciones; costo factorial O(n!) con acumulación incremental.
-- Programación dinámica con máscara: `2^n` estados y hasta `n` transiciones por estado; tiempo O(n · 2^n), memoria O(2^n).
+- La dinámica por subconjuntos **sigue siendo exponencial**: con n = 20 son unos 10,5 millones de transiciones (viable), pero con n = 100 serían 2^100 estados (imposible). Por eso **no es la estrategia que usaría en producción**: para mi caso ya elegí el **algoritmo húngaro, O(n³)** (clase 6): con n = 100 son 10⁶ pasos y garantiza el óptimo. El húngaro no es ni voraz ni la dinámica de esta clase: es un algoritmo específico del problema de asignación.
+- El problema de asignación **está en P** (se resuelve en tiempo polinomial) aunque su fuerza bruta parezca el agente viajero (n! recorridos). Que la fuerza bruta explote no significa que el problema sea difícil: la estructura permite algo mejor.
+- Si el modelo cambiara y **un trabajador pudiera tomar varios puestos según sus horas libres** (asignación generalizada), el problema pasaría a ser **NP-difícil**: sin algoritmo exacto eficiente conocido. Ahí usaría un voraz como heurística, fuerza bruta solo con n muy pequeño, y la mochila 0/1 (peso = horas del puesto, valor = puntuación, capacidad = horas libres) para el subproblema de un solo trabajador.
 
-## 6. Relación con el proyecto completo y límites
+## 5. Resumen
 
-Esta comparación estudia una versión simplificada de asignación uno a uno con puntuaciones aditivas. El proyecto completo puede incorporar certificaciones obligatorias, disponibilidad por horas, carga laboral, múltiples habilidades, incompatibilidades y puestos que requieren equipos. Esas restricciones deben modelarse expresamente; el experimento no afirma resolverlas todas.
-
-Además, para la asignación clásica uno a uno con puntuaciones aditivas existe el algoritmo Húngaro, de tiempo polinomial O(n^3). La dinámica es una estrategia exacta y didáctica para el H3, pero no necesariamente la implementación final más escalable si el modelo sigue siendo asignación clásica. Con restricciones combinatorias adicionales, el problema puede dejar de ser la asignación clásica.
-
-## 7. Conclusión
-
-Para la versión definida, el voraz no garantiza el óptimo: una elección local puede bloquear una combinación global mejor. La programación dinámica sí aplica por la subestructura óptima y los subproblemas repetidos identificados por la máscara de puestos ocupados. Se compara contra fuerza bruta para comprobar igualdad del óptimo y estudiar el crecimiento del tiempo.
+| Pregunta | Respuesta | Evidencia |
+|---|---|---|
+| Subestructura óptima | Sí | Argumento de intercambio (sección 2a) |
+| Elección voraz segura | **No** | Contraejemplo 2×2: 101 contra 4; `voraz.csv` |
+| Subproblemas que se repiten | **Sí** | n! caminos contra 2^n subproblemas |
+| Estrategia adecuada del curso | **Programación dinámica** (tabla o memoización) | `comparacion.md`: mismo costo que la fuerza bruta, mucho más rápida |
+| Lo que uso en producción | Húngaro O(n³) | n = 100 → 10⁶ pasos; la dinámica no escala |

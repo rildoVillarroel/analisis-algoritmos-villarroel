@@ -1,0 +1,17 @@
+Algoritmo,Tamano,Promedio_ms,Factor_vs_fila_anterior,Min_ms,Max_ms,Dispersion_pct
+FuerzaBruta,8,1.0711,NA,0.9721,1.1545,17.0
+DinamicaTabla,8,0.0389,NA,0.0332,0.0431,25.4
+FuerzaBruta,9,9.4107,8.79,9.2424,9.7170,5.0
+DinamicaTabla,9,0.0427,1.10,0.0418,0.0439,4.9
+FuerzaBruta,10,100.7966,10.71,98.2576,102.2187,3.9
+DinamicaTabla,10,0.0676,1.58,0.0642,0.0713,10.5
+FuerzaBruta,11,1080.7850,10.72,1077.3989,1087.5292,0.9
+DinamicaTabla,11,0.1418,2.10,0.1403,0.1443,2.8
+DinamicaTabla,16,4.7061,NA,4.5941,4.7907,4.2
+Hungaro,16,0.8142,NA,0.0316,2.3546,285.3
+DinamicaTabla,18,18.7734,3.99,18.0047,19.7924,9.5
+Hungaro,18,0.0595,0.07,0.0583,0.0603,3.4
+DinamicaTabla,20,82.7644,4.41,80.8536,84.8834,4.9
+Hungaro,20,0.0498,0.84,0.0439,0.0554,23.1
+DinamicaTabla,22,315.9053,3.82,304.8827,328.4027,7.4
+Hungaro,22,0.0481,0.97,0.0446,0.0521,15.6
