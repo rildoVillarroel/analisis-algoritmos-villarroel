@@ -1,0 +1,7 @@
+Estructura,N,Promedio_ms,Factor_vs_tamano_anterior
+Ingenuo,1000,14.1214,
+Mejorado,1000,3.4136,
+Ingenuo,2000,37.9282,2.686
+Mejorado,2000,1.5923,0.466
+Ingenuo,4000,22.2045,0.585
+Mejorado,4000,1.7035,1.070
